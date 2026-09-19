@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Khatam Al-Qur'an 30 Hari</title>
+    <style>
+        :root {
+            --primary-color: #0d9488;
+            --primary-hover: #0f766e;
+            --bg-color: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        /* Progress Bar */
+        .progress-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .progress-bar-bg {
+            background-color: #e5e7eb;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Grid Hari/Juz */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .card.completed {
+            border-color: var(--primary-color);
+            background-color: #ecfdf5;
+        }
+
+        .card-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .card-info p {
+            margin: 5px 0 0 0;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            display: block;
+            margin: 30px auto 0;
+            padding: 10px 20px;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Jurnal Khatam Al-Qur'an</h1>
+            <p>Target: 30 Juz dalam 30 Hari</p>
+        </header>
+
+        <!-- Dynamic Progress Summary -->
+        <div class="progress-card">
+            <h2 id="progress-text">Progress: 0 dari 30 Juz (0%)</h2>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <p id="motivation-text" style="font-style: italic; color: #4b5563;">Semangat memulai hari pertama!</p>
+        </div>
+
+        <!-- Grid 30 Hari -->
+        <div class="grid-container" id="days-grid">
+            <!-- Item akan dibuat otomatis oleh JavaScript -->
+        </div>
+
+        <button class="reset-btn" onclick="resetProgress()">Reset Semua Progress</button>
+    </div>
+
+    <script>
+        const totalDays = 30;
+        
+        // Memuat status dari localStorage atau buat array baru jika belum ada
+        let progressData = JSON.parse(localStorage.getItem('quran_progress')) || new Array(totalDays).fill(false);
+
+        const gridContainer = document.getElementById('days-grid');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const motivationText = document.getElementById('motivation-text');
+
+        // Fungsi Render Card Hari/Juz
+        function renderCards() {
+            gridContainer.innerHTML = '';
+            
+            for (let i = 0; i < totalDays; i++) {
+                const dayNum = i + 1;
+                const isChecked = progressData[i];
+
+                const card = document.createElement('div');
+                card.className = `card ${isChecked ? 'completed' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="card-info">
+                        <h3>Hari ke-${dayNum}</h3>
+                        <p>Membaca Juz ${dayNum}</p>
+                    </div>
+                    <input 
+                        type="checkbox" 
+                        class="checkbox-custom" 
+                        ${isChecked ? 'checked' : ''} 
+                        onchange="toggleDay(${i})"
+                    >
+                `;
+
+                gridContainer.appendChild(card);
+            }
+            updateProgressSummary();
+        }
+
+        // Fungsi Toggle Checkbox
+        function toggleDay(index) {
+            progressData[index] = !progressData[index];
+            localStorage.setItem('quran_progress', JSON.stringify(progressData));
+            renderCards();
+        }
+
+        // Fungsi Update Bar Kemajuan
+        function updateProgressSummary() {
+            const completedCount = progressData.filter(Boolean).length;
+            const percentage = Math.round((completedCount / totalDays) * 100);
+
+            progressFill.style.width = `${percentage}%`;
+            progressText.innerText = `Progress: ${completedCount} dari 30 Juz (${percentage}%)`;
+
+            // Kalimat Motivasi
+            if (completedCount === 0) {
+                motivationText.innerText = "Mari mulai membaca dari Juz 1 hari ini!";
+            } else if (completedCount < 15) {
+                motivationText.innerText = "Awal yang bagus! Tetap konsisten setiap hari.";
+            } else if (completedCount < 30) {
+                motivationText.innerText = "Luar biasa! Kamu sudah melewati setengah jalan.";
+            } else {
+                motivationText.innerText = "Alhamdulillah! Selamat, kamu telah menyelesaikan 30 Juz!";
+            }
+        }
+
+        // Fungsi Reset Data
+        function resetProgress() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh progress bacaan?")) {
+                progressData = new Array(totalDays).fill(false);
+                localStorage.removeItem('quran_progress');
+                renderCards();
+            }
+        }
+
+        // Jalankan saat pertama dibuka
+        renderCards();
+    </script>
+</body>
+</html>
