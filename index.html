@@ -3,152 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contoh Halaman Dinamis (Tanpa Reload)</title>
+    <title>Template Dashboard & Web Canggih</title>
+    <!-- Tailwind CSS untuk Desain Modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* --- CSS DASAR --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        /* Animasi Transisi Halaman yang Mulus */
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-
-        /* Sidebar Navigasi */
-        .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-        }
-
-        .sidebar h2 {
-            margin-bottom: 30px;
-            font-size: 20px;
-        }
-
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: none;
-            border: none;
-            color: #bdc3c7;
-            text-align: left;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.2s;
-        }
-
-        /* Efek saat tombol disentuh/diklik aktif */
-        .sidebar button:hover, .sidebar button.active {
-            background-color: #34495e;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* Area Konten Utama */
-        .content {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        /* Kelas untuk menyembunyikan halaman */
-        .halaman {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* Kelas untuk menampilkan halaman yang aktif */
-        .halaman.aktif {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        /* Animasi halus saat berganti halaman */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        h1 { color: #333; margin-bottom: 10px; }
-        p { color: #666; line-height: 1.6; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
 
-    <!-- SIDEBAR (MENU UTAMA) -->
-    <div class="sidebar">
-        <h2>Menu Web</h2>
-        <!-- Tombol untuk memanggil "halaman" berbeda -->
-        <button onclick="bukaHalaman('beranda', this)" class="active">🏠 Beranda</button>
-        <button onclick="bukaHalaman('profil', this)">👤 Profil</button>
-        <button onclick="bukaHalaman('layanan', this)">⚙️ Layanan</button>
-        <button onclick="bukaHalaman('kontak', this)">📞 Kontak</button>
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- ================= SIDEBAR (NAVIGASI UTAMA) ================= -->
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex shadow-xl">
+            <div>
+                <!-- Logo / Brand -->
+                <div class="p-6 flex items-center space-x-3 border-b border-slate-800">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-layer-group text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white tracking-wide">NexusCore</span>
+                </div>
+
+                <!-- Menu Item -->
+                <nav class="p-4 space-y-1">
+                    <button onclick="gantiHalaman('beranda', this)" class="menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-600/30" data-target="beranda">
+                        <i class="fa-solid fa-house w-5"></i>
+                        <span>Beranda Utama</span>
+                    </button>
+                    <button onclick="gantiHalaman('analitik', this)" class="menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white" data-target="analitik">
+                        <i class="fa-solid fa-chart-line w-5"></i>
+                        <span>Analitik Data</span>
+                    </button>
+                    <button onclick="gantiHalaman('pengguna', this)" class="menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white" data-target="pengguna">
+                        <i class="fa-solid fa-users w-5"></i>
+                        <span>Manajemen User</span>
+                    </button>
+                    <button onclick="gantiHalaman('pengaturan', this)" class="menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white" data-target="pengaturan">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        <span>Pengaturan Sistem</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Bagian Bawah Sidebar (User Info) -->
+            <div class="p-4 border-t border-slate-800">
+                <div class="flex items-center space-x-3 px-3 py-2 bg-slate-800/50 rounded-xl">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div class="overflow-hidden">
+                        <h4 class="text-sm font-semibold text-white truncate">Sarah Jenkins</h4>
+                        <p class="text-xs text-slate-400 truncate">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= KONTEN UTAMA ================= -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            <!-- Header Atas -->
+            <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
+                <div class="flex items-center space-x-4">
+                    <span id="judul-header" class="text-lg font-bold text-slate-700">Beranda Utama</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sistem Aktif
+                    </span>
+                </div>
+            </header>
+
+            <!-- Area Dinamis (Tempat Halaman Berubah) -->
+            <main class="flex-1 overflow-y-auto p-6 lg:p-10">
+
+                <!-- 1. HALAMAN BERANDA -->
+                <div id="halaman-beranda" class="halaman-content fade-in space-y-6">
+                    <div class="bg-gradient-to-r from-indigo-500 to-violet-600 rounded-2xl p-8 text-white shadow-xl">
+                        <h1 class="text-3xl font-bold mb-2">Selamat Datang Kembali, Sarah! ✨</h1>
+                        <p class="text-indigo-100 max-w-xl">Ini adalah contoh arsitektur web modern satu halaman dengan sistem multi-tampilan dinamis yang cepat dan canggih.</p>
+                    </div>
+                    <!-- Statistik Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <p class="text-slate-400 text-sm font-medium">Total Pengunjung</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">24,592</h3>
+                            <span class="text-emerald-500 text-xs font-semibold"><i class="fa-solid fa-arrow-up"></i> +12% bulan ini</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <p class="text-slate-400 text-sm font-medium">Pendapatan Bersih</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">Rp 48.2 Juta</h3>
+                            <span class="text-emerald-500 text-xs font-semibold"><i class="fa-solid fa-arrow-up"></i> +8.4% minggu ini</span>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <p class="text-slate-400 text-sm font-medium">Sistem Status</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1">99.9%</h3>
+                            <span class="text-indigo-500 text-xs font-semibold">Optimal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. HALAMAN ANALITIK -->
+                <div id="halaman-analitik" class="halaman-content hidden space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Grafik Analitik Kinerja</h2>
+                        <p class="text-slate-500 mb-6">Halaman ini dimuat secara instan ketika Anda mengeklik menu navigasi di sebelah kiri.</p>
+                        <div class="h-64 bg-slate-100 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 text-slate-400 font-medium">
+                            [ Visualisasi Grafik / Chart.js Area ]
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. HALAMAN PENGGUNA -->
+                <div id="halaman-pengguna" class="halaman-content hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                            <h2 class="text-xl font-bold text-slate-800">Daftar Pengguna Aktif</h2>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-md shadow-indigo-600/20">+ Tambah User</button>
+                        </div>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-400 text-xs uppercase tracking-wider">
+                                    <th class="p-4 font-semibold">Nama</th>
+                                    <th class="p-4 font-semibold">Email</th>
+                                    <th class="p-4 font-semibold">Role</th>
+                                    <th class="p-4 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-4 font-medium text-slate-700">Ahmad Fauzi</td>
+                                    <td class="p-4 text-slate-500">ahmad@example.com</td>
+                                    <td class="p-4 text-slate-500">Editor</td>
+                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold">Aktif</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-4 font-medium text-slate-700">Siti Rahma</td>
+                                    <td class="p-4 text-slate-500">siti@example.com</td>
+                                    <td class="p-4 text-slate-500">Author</td>
+                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold">Aktif</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. HALAMAN PENGATURAN -->
+                <div id="halaman-pengaturan" class="halaman-content hidden space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 max-w-2xl">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Pengaturan Sistem</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-600 mb-1">Nama Situs</label>
+                                <input type="text" value="NexusCore Platform" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-600 mb-1">Zona Waktu</label>
+                                <select class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>WIB (UTC+7)</option>
+                                    <option>WITA (UTC+8)</option>
+                                    <option>WIT (UTC+9)</option>
+                                </select>
+                            </div>
+                            <button class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-slate-800 transition">Simpan Perubahan</button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
     </div>
 
-    <!-- KONTEN UTAMA (TEMPAT HALAMAN BERGANTI-GANTI) -->
-    <div class="content">
-
-        <!-- Halaman 1: Beranda -->
-        <div id="beranda" class="halaman aktif">
-            <h1>Selamat Datang di Beranda</h1>
-            <p>Ini adalah halaman utama. Coba klik menu di sebelah kiri untuk melihat halaman lain tanpa reload.</p>
-        </div>
-
-        <!-- Halaman 2: Profil -->
-        <div id="profil" class="halaman">
-            <h1>Halaman Profil</h1>
-            <p>Ini adalah halaman profil perusahaan atau pribadi Anda. Berisi sejarah singkat atau informasi penting.</p>
-        </div>
-
-        <!-- Halaman 3: Layanan -->
-        <div id="layanan" class="halaman">
-            <h1>Halaman Layanan</h1>
-            <p>Di sini Anda bisa menampilkan daftar produk atau jasa yang ditawarkan oleh web Anda.</p>
-        </div>
-
-        <!-- Halaman 4: Kontak -->
-        <div id="kontak" class="halaman">
-            <h1>Halaman Kontak</h1>
-            <p>Hubungi kami melalui email: info@domainanda.com atau nomor WhatsApp yang tersedia.</p>
-        </div>
-
-    </div>
-
-    <!-- JAVASCRIPT UNTUK MENGATUR PERPINDAHAN -->
+    <!-- ================= JAVASCRIPT CANGGIH ================= -->
     <script>
-        function bukaHalaman(idHalaman, tombolAktif) {
-            // 1. Sembunyikan semua elemen yang punya kelas 'halaman'
-            const semuaHalaman = document.querySelectorAll('.halaman');
+        function gantiHalaman(targetId, elementTombol) {
+            // 1. Sembunyikan semua elemen yang punya kelas 'halaman-content'
+            const semuaHalaman = document.querySelectorAll('.halaman-content');
             semuaHalaman.forEach(halaman => {
-                halaman.classList.remove('aktif');
+                halaman.classList.add('hidden');
+                halaman.classList.remove('fade-in');
             });
 
-            // 2. Hilangkan tanda aktif dari semua tombol menu
-            const semuaTombol = document.querySelectorAll('.sidebar button');
-            semuaTombol.forEach(tombol => {
-                tombol.classList.remove('active');
+            // 2. Tampilkan halaman target dengan animasi fade-in
+            const targetHalaman = document.getElementById('halaman-' + targetId);
+            targetHalaman.classList.remove('hidden');
+            targetHalaman.classList.add('fade-in');
+
+            // 3. Ubah gaya tombol aktif di sidebar
+            const semuaTombol = document.querySelectorAll('.menu-btn');
+            semuaTombol.forEach(btn => {
+                btn.className = "menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white text-slate-300";
             });
 
-            // 3. Tampilkan halaman yang diklik sesuai ID-nya
-            document.getElementById(idHalaman).classList.add('aktif');
+            // Berikan efek aktif (Warna Indigo terang dengan bayangan) pada tombol yang diklik
+            elementTombol.className = "menu-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-600/30";
 
-            // 4. Berikan tanda aktif pada tombol yang sedang ditekan
-            tombolAktif.classList.add('active');
+            // 4. Perbarui Judul di Header Atas secara dinamis
+            const judulTeks = elementTombol.querySelector('span').innerText;
+            document.getElementById('judul-header').innerText = judulTeks;
         }
     </script>
-
 </body>
 </html>
