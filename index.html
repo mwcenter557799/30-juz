@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contoh Halaman Dinamis (Tanpa Reload)</title>
+    <style>
+        /* --- CSS DASAR --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        /* Sidebar Navigasi */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+
+        /* Efek saat tombol disentuh/diklik aktif */
+        .sidebar button:hover, .sidebar button.active {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Area Konten Utama */
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* Kelas untuk menyembunyikan halaman */
+        .halaman {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Kelas untuk menampilkan halaman yang aktif */
+        .halaman.aktif {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Animasi halus saat berganti halaman */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { color: #333; margin-bottom: 10px; }
+        p { color: #666; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR (MENU UTAMA) -->
+    <div class="sidebar">
+        <h2>Menu Web</h2>
+        <!-- Tombol untuk memanggil "halaman" berbeda -->
+        <button onclick="bukaHalaman('beranda', this)" class="active">🏠 Beranda</button>
+        <button onclick="bukaHalaman('profil', this)">👤 Profil</button>
+        <button onclick="bukaHalaman('layanan', this)">⚙️ Layanan</button>
+        <button onclick="bukaHalaman('kontak', this)">📞 Kontak</button>
+    </div>
+
+    <!-- KONTEN UTAMA (TEMPAT HALAMAN BERGANTI-GANTI) -->
+    <div class="content">
+
+        <!-- Halaman 1: Beranda -->
+        <div id="beranda" class="halaman aktif">
+            <h1>Selamat Datang di Beranda</h1>
+            <p>Ini adalah halaman utama. Coba klik menu di sebelah kiri untuk melihat halaman lain tanpa reload.</p>
+        </div>
+
+        <!-- Halaman 2: Profil -->
+        <div id="profil" class="halaman">
+            <h1>Halaman Profil</h1>
+            <p>Ini adalah halaman profil perusahaan atau pribadi Anda. Berisi sejarah singkat atau informasi penting.</p>
+        </div>
+
+        <!-- Halaman 3: Layanan -->
+        <div id="layanan" class="halaman">
+            <h1>Halaman Layanan</h1>
+            <p>Di sini Anda bisa menampilkan daftar produk atau jasa yang ditawarkan oleh web Anda.</p>
+        </div>
+
+        <!-- Halaman 4: Kontak -->
+        <div id="kontak" class="halaman">
+            <h1>Halaman Kontak</h1>
+            <p>Hubungi kami melalui email: info@domainanda.com atau nomor WhatsApp yang tersedia.</p>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT UNTUK MENGATUR PERPINDAHAN -->
+    <script>
+        function bukaHalaman(idHalaman, tombolAktif) {
+            // 1. Sembunyikan semua elemen yang punya kelas 'halaman'
+            const semuaHalaman = document.querySelectorAll('.halaman');
+            semuaHalaman.forEach(halaman => {
+                halaman.classList.remove('aktif');
+            });
+
+            // 2. Hilangkan tanda aktif dari semua tombol menu
+            const semuaTombol = document.querySelectorAll('.sidebar button');
+            semuaTombol.forEach(tombol => {
+                tombol.classList.remove('active');
+            });
+
+            // 3. Tampilkan halaman yang diklik sesuai ID-nya
+            document.getElementById(idHalaman).classList.add('aktif');
+
+            // 4. Berikan tanda aktif pada tombol yang sedang ditekan
+            tombolAktif.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
